@@ -27,6 +27,11 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          echo $CLIENT_ID
+          echo $CLIENT_SECRET
+          echo $REFRESH_TOKEN
+          echo $ACCESS_TOKEN
 
       - name: Run script 
         run: |
@@ -35,4 +40,3 @@ jobs:
           export REFRESH_TOKEN="${{ secrets.REFRESH_TOKEN }}"
           export ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}"
           node code
-
