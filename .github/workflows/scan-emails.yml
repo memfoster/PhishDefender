@@ -33,3 +33,6 @@ jobs:
           echo $REFRESH_TOKEN
           echo $ACCESS_TOKEN
 
+      - name: Run script 
+        run: node code
+
