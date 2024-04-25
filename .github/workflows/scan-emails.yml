@@ -34,5 +34,5 @@ jobs:
           echo $ACCESS_TOKEN
 
       - name: Run script 
-        run: node code.js
+        run: node code
 
