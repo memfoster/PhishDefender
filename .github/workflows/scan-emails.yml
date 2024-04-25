@@ -19,8 +19,7 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
-        run: 
-          npm install 
+        run: npm install 
 
       - name: Run script to scan emails
         env:
@@ -28,8 +27,9 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: echo ${{ secrets.CLIENT_ID }}
-            echo ${{ secrets.CLIENT_SECRET }}
-            echo ${{ secrets.REFRESH_TOKEN }}
-            echo ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          echo $CLIENT_ID
+          echo $CLIENT_SECRET
+          echo $REFRESH_TOKEN
+          echo $ACCESS_TOKEN
 
