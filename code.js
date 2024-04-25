@@ -1,15 +1,11 @@
-const dotenv = require('dotenv');
-dotenv.config();
-
 const nodemailer = require('nodemailer')
 const { google } = require('googleapis') 
 
-const client_id = process.env.clientId
-const client_secret = process.env.clientSecret
+const client_id = process.env.CLIENT_ID
+const client_secret = process.env.CLIENT_SECRET
 const redirectUri = 'https://developers.google.com/oauthplayground'
-const refresh_Token = process.env.refresh_token
-const accessToken = process.env.access_token
-
+const refresh_Token = process.env.REFRESH_TOKEN
+const accessToken = process.env.ACCESSTOKEN
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirectUri)
 oAuth2Client.setCredentials({access_token: accessToken, refresh_token: refresh_Token})
 
