@@ -8,7 +8,7 @@ const client_id = process.env.CLIENT_ID
 const client_secret = process.env.CLIENT_SECRET
 const redirectUri = 'https://developers.google.com/oauthplayground'
 const refresh_Token = process.env.REFRESH_TOKEN
-const accessToken = process.env.ACCESSTOKEN
+const accessToken = process.env.ACCESS_TOKEN
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirectUri)
 oAuth2Client.setCredentials({access_token: accessToken, refresh_token: refresh_Token})
 
