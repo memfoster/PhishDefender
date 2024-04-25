@@ -1,0 +1,31 @@
+name: Scan Emails
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  scan-emails:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: |
+          npm install 
+
+      - name: Run script to scan emails
+        env:
+          client_id: ${{ secrets.client_id }}
+          client_secret: ${{ secrets.client_secret }}
+          refresh_token: ${{ secrets.refresh_token }}
+          accessToken: ${{ secrets.accessToken }}
+        run: node code
