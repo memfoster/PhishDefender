@@ -24,8 +24,8 @@ jobs:
 
       - name: Run script to scan emails
         env:
-          client_id: ${{ secrets.client_id }}
-          client_secret: ${{ secrets.client_secret }}
-          refresh_token: ${{ secrets.refresh_token }}
-          accessToken: ${{ secrets.accessToken }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          ACCESSTOKEN: ${{ secrets.ACCESSTOKEN }}
         run: node code
