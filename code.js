@@ -131,3 +131,6 @@ async function getMessage(email) {
   
   processEmails();
 }
+
+main();
+
