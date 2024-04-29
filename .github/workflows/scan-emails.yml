@@ -27,8 +27,6 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          
-      - name: Set up environment variables
         run: |
           echo "Setting up environment variables..."
           echo "CLIENT_ID=$CLIENT_ID" >> $GITHUB_ENV
