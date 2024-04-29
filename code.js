@@ -48,7 +48,7 @@ async function main() {
             const message = {
                 sender: res.data.payload.headers.find(header => header.name === 'From').value,
                 subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet 
+                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
             };
             return message;
         } catch (error) {
@@ -59,51 +59,15 @@ async function main() {
 
     function calculatePhishingScore(message) {
         let phishingScore = 0;
-        // Common phishing indicators
-        const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious', 'alert', 'confirm', 'unusual', 'login', 'information', 'update'];
-        
-        // Additional phishing patterns
-        const additionalPhishingPatterns = [
-            /your (?:email|account|password|username) has been compromised/i,
-            /security alert: /i,
-            /action required: /i,
-            /your (?:account|email) will be suspended/i,
-            /click here to (?:verify|confirm|reset) your (?:account|password)/i,
-            /unusual login activity detected/i
-        ];
-
-        // Smishing patterns
-        const smishingPatterns = [
-            /please call this number to verify your account/i,
-            /you've won a prize, click here to claim/i,
-            /your bank account has been locked, click here to unlock/i,
-            /urgent: your package delivery is delayed, click here to reschedule/i
-        ];
-        
-        // Check for common phishing keywords
+        const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
         for (const keyword of phishingKeywords) {
             if (message.subject.toLowerCase().includes(keyword)) {
-                phishingScore += 2; // Increase score for subject match
+                phishingScore++;
             }
             if (message.body.toLowerCase().includes(keyword)) {
-                phishingScore++; // Increase score for body match
+                phishingScore++;
             }
         }
-        
-        // Check for additional phishing patterns
-        for (const pattern of additionalPhishingPatterns) {
-            if (pattern.test(message.subject) || pattern.test(message.body)) {
-                phishingScore += 3; // Increase score for pattern match
-            }
-        }
-        
-        // Check for smishing patterns
-        for (const pattern of smishingPatterns) {
-            if (pattern.test(message.subject) || pattern.test(message.body)) {
-                phishingScore += 4; // Increase score for smishing pattern match
-            }
-        }
-        
         return phishingScore;
     }
 
@@ -118,14 +82,14 @@ async function main() {
                     clientId: CLIENT_ID,
                     clientSecret: CLIENT_SECRET,
                     refreshToken: REFRESH_TOKEN,
-                    accessToken: ACCESS_TOKEN,
+                    accessToken: token,
                 }
             });
             const mailOptions = {
                 from: 'margo.emstorment@gmail.com',
                 to: 'test.foster2024@gmail.com',
                 subject: 'Phishing Attempt Detected',
-                text: `Dear user, \n\nWe have detected a potential phishing attempt in your email inbox. Please check to ensure the user is known. \n\nBest regards, \nPhishDefender Team`
+                text: `Dear user, \n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious" Please check to ensure the user is known. \n\nBest regards, \nPhishDefender Team`
             };
             const result = await transporter.sendMail(mailOptions);
             console.log('Email sent...', result);
@@ -148,7 +112,7 @@ async function main() {
         }
     }
 
-    await processEmails();
+    processEmails();
 }
 
 main();
