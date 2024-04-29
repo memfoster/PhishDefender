@@ -21,17 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install 
 
-      - name: Get secrets 
-        env:
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Set up environment variables
         run: |
-          echo $CLIENT_ID
-          echo $CLIENT_SECRET
-          echo $REFRESH_TOKEN
-          echo $ACCESS_TOKEN
+          echo "Setting up environment variables..."
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> $GITHUB_ENV
+          echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN=${{ secrets.REFRESH_TOKEN }}" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> $GITHUB_ENV
+          echo "Environment variables set."
 
       - name: Run script
         run: |
