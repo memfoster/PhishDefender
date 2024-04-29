@@ -13,18 +13,47 @@ async function main() {
 
     const gmail = google.gmail({
         version: 'v1',
+        auth: oAuth2Client,
+    });
+
+    async function retrieveEmails() {
+        try {
+            const res = await gmail.users.messages.list({ userId: 'me' });
+            const messages = res.data.messages || [];
+            return messages;
+        } catch (error) {
+            console.error('Error retrieving emails:', error);
+            return [];
         }
     }
 
     async function scanForPhishingEmails(emails) {
         const phishingThreshold = 3; // Threshold for determining a potential phishing attempt
         const phishingResults = [];
+
+        for (const email of emails) {
+            const message = await getMessage(email); // Pass the email directly to getMessage
+            const phishingScore = calculatePhishingScore(message);
+            if (phishingScore >= phishingThreshold) {
+                phishingResults.push({ sender: message.sender, subject: message.subject, score: phishingScore });
+            }
+        }
+
         return phishingResults;
     }
 
     async function getMessage(email) {
         try {
             const res = await gmail.users.messages.get({ userId: 'me', id: email.id });
+            const message = {
+                sender: res.data.payload.headers.find(header => header.name === 'From').value,
+                subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
+                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
+            };
+            return message;
+        } catch (error) {
+            console.error(`Error retrieving message ${email.id}:`, error);
+            return null;
         }
     }
 
@@ -32,7 +61,13 @@ async function main() {
         let phishingScore = 0;
         const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
         for (const keyword of phishingKeywords) {
-            if (message.subject.toLowerCase().includes(keyword)) 
+            if (message.subject.toLowerCase().includes(keyword)) {
+                phishingScore++;
+            }
+            if (message.body.toLowerCase().includes(keyword)) {
+                phishingScore++;
+            }
+        }
         return phishingScore;
     }
 
@@ -59,12 +94,22 @@ async function main() {
             const result = await transporter.sendMail(mailOptions);
             console.log('Email sent...', result);
         } catch (error) {
+            console.error('Error sending email:', error);
+            throw error;
         }
     }
 
     async function processEmails() {
         try {
             const emails = await retrieveEmails();
+            const phishingResults = await scanForPhishingEmails(emails);
+            console.log('Phishing results:', phishingResults);
+            if (phishingResults.length > 0) {
+                await sendNotification(phishingResults);
+            }
+        } catch (error) {
+            console.error('Error processing emails:', error);
+        }
     }
 
     processEmails();
