@@ -18,6 +18,7 @@ async function main() {
 
     async function retrieveEmails() {
         try {
+            // Retrieve list of messages (emails) for the authenticated user
             const res = await gmail.users.messages.list({ userId: 'me' });
             const messages = res.data.messages || [];
             return messages;
@@ -32,7 +33,8 @@ async function main() {
         const phishingResults = [];
 
         for (const email of emails) {
-            const message = await getMessage(email); // Pass the email directly to getMessage
+            // Get detailed information about each email (message)
+            const message = await getMessage(email);
             const phishingScore = calculatePhishingScore(message);
             if (phishingScore >= phishingThreshold) {
                 phishingResults.push({ sender: message.sender, subject: message.subject, score: phishingScore });
@@ -44,11 +46,12 @@ async function main() {
 
     async function getMessage(email) {
         try {
+            // Retrieve a specific email message
             const res = await gmail.users.messages.get({ userId: 'me', id: email.id });
             const message = {
                 sender: res.data.payload.headers.find(header => header.name === 'From').value,
                 subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
+                body: res.data.snippet // Extract email body (snippet) - adjust as needed for full body
             };
             return message;
         } catch (error) {
@@ -60,6 +63,7 @@ async function main() {
     function calculatePhishingScore(message) {
         let phishingScore = 0;
         const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
+        // Check if phishing keywords are present in email subject or body
         for (const keyword of phishingKeywords) {
             if (message.subject.toLowerCase().includes(keyword)) {
                 phishingScore++;
@@ -87,12 +91,12 @@ async function main() {
             });
             const mailOptions = {
                 from: 'margo.emstorment@gmail.com',
-                to: 'test.foster2024@gmail.com',
+                to: 'test.foster2024@gmail.com', // Update recipient email address
                 subject: 'Phishing Attempt Detected',
-                text: `Dear user, \n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious" Please check to ensure the user is known. \n\nBest regards, \nPhishDefender Team`
+                text: `Dear user,\n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious". Please check to ensure the sender is trusted.\n\nBest regards,\nPhishDefender Team`
             };
             const result = await transporter.sendMail(mailOptions);
-            console.log('Email sent...', result);
+            console.log('Email sent:', result);
         } catch (error) {
             console.error('Error sending email:', error);
             throw error;
@@ -112,7 +116,9 @@ async function main() {
         }
     }
 
-    processEmails();
+    // Start processing emails
+    await processEmails();
 }
 
+// Call the main function to start the script
 main();
