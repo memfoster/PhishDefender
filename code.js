@@ -48,7 +48,7 @@ async function main() {
             const message = {
                 sender: res.data.payload.headers.find(header => header.name === 'From').value,
                 subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
+                body: res.data.snippet 
             };
             return message;
         } catch (error) {
@@ -57,19 +57,57 @@ async function main() {
         }
     }
 
-    function calculatePhishingScore(message) {
-        let phishingScore = 0;
-        const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
-        for (const keyword of phishingKeywords) {
-            if (message.subject.toLowerCase().includes(keyword)) {
-                phishingScore++;
-            }
-            if (message.body.toLowerCase().includes(keyword)) {
-                phishingScore++;
-            }
+    // Function to calculate phishing score based on the message content
+function calculatePhishingScore(message) {
+    let phishingScore = 0;
+    // Common phishing indicators
+    const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious', 'alert', 'confirm', 'unusual', 'login', 'information', 'update'];
+    
+    // Additional phishing patterns
+    const additionalPhishingPatterns = [
+        /your (?:email|account|password|username) has been compromised/i,
+        /security alert: /i,
+        /action required: /i,
+        /your (?:account|email) will be suspended/i,
+        /click here to (?:verify|confirm|reset) your (?:account|password)/i,
+        /unusual login activity detected/i
+    ];
+
+    // Smishing patterns
+    const smishingPatterns = [
+        /please call this number to verify your account/i,
+        /you've won a prize, click here to claim/i,
+        /your bank account has been locked, click here to unlock/i,
+        /urgent: your package delivery is delayed, click here to reschedule/i
+    ];
+    
+    // Check for common phishing keywords
+    for (const keyword of phishingKeywords) {
+        if (message.subject.toLowerCase().includes(keyword)) {
+            phishingScore += 2; // Increase score for subject match
         }
-        return phishingScore;
+        if (message.body.toLowerCase().includes(keyword)) {
+            phishingScore++; // Increase score for body match
+        }
     }
+    
+    // Check for additional phishing patterns
+    for (const pattern of additionalPhishingPatterns) {
+        if (pattern.test(message.subject) || pattern.test(message.body)) {
+            phishingScore += 3; // Increase score for pattern match
+        }
+    }
+    
+    // Check for smishing patterns
+    for (const pattern of smishingPatterns) {
+        if (pattern.test(message.subject) || pattern.test(message.body)) {
+            phishingScore += 4; // Increase score for smishing pattern match
+        }
+    }
+    
+    return phishingScore;
+}
+
 
     async function sendNotification(phishingResults) {
         try {
