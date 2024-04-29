@@ -39,4 +39,4 @@ jobs:
           export CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}"
           export REFRESH_TOKEN="${{ secrets.REFRESH_TOKEN }}"
           export ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}"
-          node code.js
+          node code
