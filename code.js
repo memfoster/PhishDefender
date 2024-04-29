@@ -13,47 +13,21 @@ async function main() {
 
     const gmail = google.gmail({
         version: 'v1',
-        auth: oAuth2Client,
-    });
-
-    async function retrieveEmails() {
-        try {
-            const res = await gmail.users.messages.list({ userId: 'me' });
-            const messages = res.data.messages || [];
-            return messages;
-        } catch (error) {
-            console.error('Error retrieving emails:', error);
-            return [];
+	@@ -28,11 +27,6 @@ async function retrieveEmails() {
         }
     }
 
     async function scanForPhishingEmails(emails) {
         const phishingThreshold = 3; // Threshold for determining a potential phishing attempt
         const phishingResults = [];
-
-        for (const email of emails) {
-            const message = await getMessage(email); // Pass the email directly to getMessage
-            const phishingScore = calculatePhishingScore(message);
-            if (phishingScore >= phishingThreshold) {
-                phishingResults.push({ sender: message.sender, subject: message.subject, score: phishingScore });
-            }
-        }
-
+	@@ -48,7 +42,6 @@ async function scanForPhishingEmails(emails) {
         return phishingResults;
     }
 
     async function getMessage(email) {
         try {
             const res = await gmail.users.messages.get({ userId: 'me', id: email.id });
-            const message = {
-                sender: res.data.payload.headers.find(header => header.name === 'From').value,
-                subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
-            };
-            return message;
-        } catch (error) {
-            console.error(`Error retrieving message ${email.id}:`, error);
-            return null;
+	@@ -64,11 +57,8 @@ async function getMessage(email) {
         }
     }
 
@@ -62,12 +36,7 @@ async function main() {
         const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
         for (const keyword of phishingKeywords) {
             if (message.subject.toLowerCase().includes(keyword)) {
-                phishingScore++;
-            }
-            if (message.body.toLowerCase().includes(keyword)) {
-                phishingScore++;
-            }
-        }
+	@@ -81,33 +71,26 @@ async function getMessage(email) {
         return phishingScore;
     }
 
@@ -82,7 +51,7 @@ async function main() {
                     clientId: CLIENT_ID,
                     clientSecret: CLIENT_SECRET,
                     refreshToken: REFRESH_TOKEN,
-                    accessToken: token,
+                    accessToken: ACCESS_TOKEN,
                 }
             });
             const mailOptions = {
@@ -94,22 +63,14 @@ async function main() {
             const result = await transporter.sendMail(mailOptions);
             console.log('Email sent...', result);
         } catch (error) {
-            console.error('Error sending email:', error);
-            throw error;
+	@@ -116,7 +99,6 @@ async function getMessage(email) {
         }
     }
 
     async function processEmails() {
         try {
             const emails = await retrieveEmails();
-            const phishingResults = await scanForPhishingEmails(emails);
-            console.log('Phishing results:', phishingResults);
-            if (phishingResults.length > 0) {
-                await sendNotification(phishingResults);
-            }
-        } catch (error) {
-            console.error('Error processing emails:', error);
-        }
+	@@ -131,3 +113,7 @@ async function getMessage(email) {
     }
 
     processEmails();
