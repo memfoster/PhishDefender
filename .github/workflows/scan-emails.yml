@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install 
 
-      - name: Run script to scan emails
+      - name: Get secrets
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -32,3 +32,10 @@ jobs:
           echo $CLIENT_SECRET
           echo $REFRESH_TOKEN
           echo $ACCESS_TOKEN
+      - name: Run script 
+        run: |
+          export CLIENT_ID="${{ secrets.CLIENT_ID }}"
+          export CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}"
+          export REFRESH_TOKEN="${{ secrets.REFRESH_TOKEN }}"
+          export ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}"
+          node code
