@@ -35,4 +35,47 @@ jobs:
 
       - name: Run script 
         run: |
+        name: Scan Emails
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  scan-emails:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install 
+
+      - name: Get secrets
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          echo $CLIENT_ID
+          echo $CLIENT_SECRET
+          echo $REFRESH_TOKEN
+          echo $ACCESS_TOKEN
+
+      - name: Run script 
+        run: |
+          export CLIENT_ID="${{ secrets.CLIENT_ID }}"
+          export CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}"
+          export REFRESH_TOKEN="${{ secrets.REFRESH_TOKEN }}"
+          export ACCESS_TOKEN="${{ secrets.ACCESS_TOKEN }}"
+          node code
+
           node code
