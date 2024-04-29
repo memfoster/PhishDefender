@@ -32,7 +32,7 @@ async function main() {
         const phishingResults = [];
 
         for (const email of emails) {
-            const message = await getMessage(email);
+            const message = await getMessage(email); // Pass the email directly to getMessage
             const phishingScore = calculatePhishingScore(message);
             if (phishingScore >= phishingThreshold) {
                 phishingResults.push({ sender: message.sender, subject: message.subject, score: phishingScore });
@@ -48,7 +48,7 @@ async function main() {
             const message = {
                 sender: res.data.payload.headers.find(header => header.name === 'From').value,
                 subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet
+                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
             };
             return message;
         } catch (error) {
@@ -89,10 +89,10 @@ async function main() {
                 from: 'margo.emstorment@gmail.com',
                 to: 'test.foster2024@gmail.com',
                 subject: 'Phishing Attempt Detected',
-                text: `Dear user,\n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious". Please check to ensure the sender is trusted.\n\nBest regards,\nPhishDefender Team`
+                text: `Dear user, \n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious" Please check to ensure the user is known. \n\nBest regards, \nPhishDefender Team`
             };
             const result = await transporter.sendMail(mailOptions);
-            console.log('Email sent:', result);
+            console.log('Email sent...', result);
         } catch (error) {
             console.error('Error sending email:', error);
             throw error;
@@ -112,7 +112,7 @@ async function main() {
         }
     }
 
-    await processEmails(); // Call processEmails to start the email processing
+    processEmails();
 }
 
-main(); // Call main function to start the script
+main();
