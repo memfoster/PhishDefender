@@ -1,4 +1,5 @@
 name: Scan Emails
+name: Scan Emails
 
 on:
   push:
