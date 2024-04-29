@@ -118,7 +118,7 @@ async function main() {
                     clientId: CLIENT_ID,
                     clientSecret: CLIENT_SECRET,
                     refreshToken: REFRESH_TOKEN,
-                    accessToken: token,
+                    accessToken: ACCESS_TOKEN,
                 }
             });
             const mailOptions = {
