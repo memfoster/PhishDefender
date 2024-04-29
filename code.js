@@ -13,21 +13,18 @@ async function main() {
 
     const gmail = google.gmail({
         version: 'v1',
-	@@ -28,11 +27,6 @@ async function retrieveEmails() {
         }
     }
 
     async function scanForPhishingEmails(emails) {
         const phishingThreshold = 3; // Threshold for determining a potential phishing attempt
         const phishingResults = [];
-	@@ -48,7 +42,6 @@ async function scanForPhishingEmails(emails) {
         return phishingResults;
     }
 
     async function getMessage(email) {
         try {
             const res = await gmail.users.messages.get({ userId: 'me', id: email.id });
-	@@ -64,11 +57,8 @@ async function getMessage(email) {
         }
     }
 
@@ -35,8 +32,7 @@ async function main() {
         let phishingScore = 0;
         const phishingKeywords = ['urgent', 'verify', 'password', 'account', 'suspicious'];
         for (const keyword of phishingKeywords) {
-            if (message.subject.toLowerCase().includes(keyword)) {
-	@@ -81,33 +71,26 @@ async function getMessage(email) {
+            if (message.subject.toLowerCase().includes(keyword)) 
         return phishingScore;
     }
 
@@ -63,14 +59,12 @@ async function main() {
             const result = await transporter.sendMail(mailOptions);
             console.log('Email sent...', result);
         } catch (error) {
-	@@ -116,7 +99,6 @@ async function getMessage(email) {
         }
     }
 
     async function processEmails() {
         try {
             const emails = await retrieveEmails();
-	@@ -131,3 +113,7 @@ async function getMessage(email) {
     }
 
     processEmails();
