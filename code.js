@@ -32,7 +32,7 @@ async function main() {
         const phishingResults = [];
 
         for (const email of emails) {
-            const message = await getMessage(email); // Pass the email directly to getMessage
+            const message = await getMessage(email); 
             const phishingScore = calculatePhishingScore(message);
             if (phishingScore >= phishingThreshold) {
                 phishingResults.push({ sender: message.sender, subject: message.subject, score: phishingScore });
@@ -48,7 +48,7 @@ async function main() {
             const message = {
                 sender: res.data.payload.headers.find(header => header.name === 'From').value,
                 subject: res.data.payload.headers.find(header => header.name === 'Subject').value,
-                body: res.data.snippet // You can also fetch the full body if needed: res.data.payload.parts[0].body.data
+                body: res.data.snippet 
             };
             return message;
         } catch (error) {
@@ -87,7 +87,7 @@ async function main() {
             });
             const mailOptions = {
                 from: 'margo.emstorment@gmail.com',
-                to: 'test.foster2024@gmail.com',
+                to: 'test.foster2024@gmail.com', // test email address 
                 subject: 'Phishing Attempt Detected',
                 text: `Dear user, \n\nWe have detected a potential phishing attempt in your email inbox with keywords of "urgent', 'verify', 'password', 'account', 'suspicious" Please check to ensure the user is known. \n\nBest regards, \nPhishDefender Team`
             };
